@@ -431,7 +431,7 @@ OutputExpressionVector(const vector<const Expression*> &var, std::ostream &out)
 {
 	needcomma.push_back(false);
 	for_each(var.begin(), var.end(),
-			 std::bind2nd(std::ptr_fun(OutputActualParamExpression), &out));
+			 [&out](const Expression *expr){ return OutputActualParamExpression(expr, &out); });
 	needcomma.pop_back();
 }
 

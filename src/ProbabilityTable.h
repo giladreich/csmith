@@ -167,8 +167,7 @@ ProbabilityTable<Key, Value>::get_value(Key k)
 	assert(k < curr_max_key_);
 
 	typename vector<Entry *>::iterator i;
-	i = find_if(table_.begin(), table_.end(), std::bind2nd(std::ptr_fun(my_greater<Key, Value>), k));
-
+	i = find_if(table_.begin(), table_.end(), [&](Entry *entry){ return my_greater(entry, k); });
 	assert(i != table_.end());
 	return (*i)->get_value();
 }

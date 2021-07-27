@@ -885,7 +885,7 @@ void
 MapVariableList(const vector<Variable*> &var, std::ostream &out,
 				int (*func)(Variable *var, std::ostream *pOut))
 {
-	for_each(var.begin(), var.end(), std::bind2nd(std::ptr_fun(func), &out));
+	for_each(var.begin(), var.end(), [&](Variable *var){ return func(var, &out); });
 }
 
 // --------------------------------------------------------------

@@ -545,7 +545,7 @@ Function::OutputFormalParamList(std::ostream &out)
 		param_first = true;
 		for_each(param.begin(),
 				 param.end(),
-				 std::bind2nd(std::ptr_fun(OutputFormalParam), &out));
+				 [&out](Variable *var){ return OutputFormalParam(var, &out); });
 	}
 }
 
@@ -908,14 +908,14 @@ OutputForwardDeclarations(std::ostream &out)
 	outputln(out);
 	output_comment_line(out, "--- FORWARD DECLARATIONS ---");
 	for_each(FuncList.begin(), FuncList.end(),
-			 std::bind2nd(std::ptr_fun(OutputForwardDecl), &out));
+			 [&out](Function *func){ return OutputForwardDecl(func, &out); });
 
 	if(CGOptions::func_attr_flag()){
 		outputln(out);
 		outputln(out);
 		output_comment_line(out, "--- FORWARD ALIAS DECLARATIONS ---");
 		for_each(FuncList.begin(), FuncList.end(),
-				 std::bind2nd(std::ptr_fun(OutputForwardDeclAlias), &out));
+				 [&out](Function *func){ return OutputForwardDeclAlias(func, &out); });
 	}
 }
 
@@ -929,7 +929,7 @@ OutputFunctions(std::ostream &out)
 	outputln(out);
 	output_comment_line(out, "--- FUNCTIONS ---");
 	for_each(FuncList.begin(), FuncList.end(),
-			 std::bind2nd(std::ptr_fun(OutputFunction), &out));
+			 [&out](Function *func){ return OutputFunction(func, &out); });
 }
 
 /*
@@ -948,7 +948,8 @@ Function::deleteFunction(Function* func)
 void
 Function::doFinalization(void)
 {
-	for_each(FuncList.begin(), FuncList.end(), std::ptr_fun(deleteFunction));
+	for_each(FuncList.begin(), FuncList.end(),
+			 [](Function *func){ return deleteFunction(func); });
 
 	FuncList.clear();
 
